@@ -1,0 +1,22 @@
+name: 'Maven SSH Deploy'
+description: 'Deploy Maven repository over SSH and rsync'
+author: 'Martin Paljak'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+inputs:
+  user:
+    description: 'SSH user for deployment'
+    required: true
+  key:
+    description: 'SSH private key for authentication'
+    required: true
+  host_key:
+    description: 'SSH host key for verification'
+    required: true
+  path:
+    description: 'Path to the repository directory'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
