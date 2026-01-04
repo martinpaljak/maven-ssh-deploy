@@ -14,7 +14,7 @@ mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 
 # Set up SSH private key
-echo "${SSH_KEY}" > ~/.ssh/id_rsa
+printf '%s\n' "${SSH_KEY}" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
 # Set up known_hosts with the host key
@@ -54,7 +54,6 @@ cd "${GITHUB_WORKSPACE}/${REPO_PATH}"
 
 echo "Deployment preparation complete."
 echo "Repository path: ${GITHUB_WORKSPACE}/${REPO_PATH}"
-echo "SSH User: ${SSH_USER}"
 
 # Add actual deployment commands here based on your specific needs
 # For now, this script sets up the SSH environment and validates inputs
