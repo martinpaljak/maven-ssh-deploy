@@ -192,7 +192,7 @@ STAGING="${TMPDIR_WORK}/repo"
 mkdir -p "${STAGING}"
 
 echo "Fetching remote metadata..."
-rsync -amv --no-links --no-devices --no-specials -e "${SSH_CMD}" \
+rsync -rptm --no-links --no-devices --no-specials -e "${SSH_CMD}" \
     --include='*/' \
     --include='maven-metadata.xml*' \
     --exclude='*' \
@@ -202,6 +202,6 @@ echo "Building and deploying locally..."
 ./mvnw --no-transfer-progress -B deploy -DaltDeploymentRepository=ephemeral::file://"${STAGING}"
 
 echo "Syncing to remote..."
-rsync -rvptv --no-links --no-devices --no-specials -e "${SSH_CMD}" -- "${STAGING}/" "${SSH_USER}@${SSH_HOST}:${REPO_PATH}/"
+rsync -rpt --no-links --no-devices --no-specials -e "${SSH_CMD}" -- "${STAGING}/" "${SSH_USER}@${SSH_HOST}:${REPO_PATH}/"
 
 echo "Done."

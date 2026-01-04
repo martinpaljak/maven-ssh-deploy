@@ -37,7 +37,7 @@ mkdir -p "${STAGING}"
 SSH_CMD="ssh -p ${SSH_PORT}"
 
 echo "Fetching metadata from ${REMOTE}:${REPO_PATH}..."
-rsync -amv --no-links --no-devices --no-specials -e "${SSH_CMD}" \
+rsync -am --no-links --no-devices --no-specials -e "${SSH_CMD}" \
     --include='*/' \
     --include='maven-metadata.xml*' \
     --exclude='*' \
@@ -47,6 +47,6 @@ echo "Building..."
 ./mvnw -B deploy -DaltDeploymentRepository=local::default::file://"${STAGING}"
 
 echo "Uploading to ${REMOTE}:${REPO_PATH}..."
-rsync -rvptv --no-links --no-devices --no-specials -e "${SSH_CMD}" "${STAGING}/" "${REMOTE}:${REPO_PATH}/"
+rsync -rptv --no-links --no-devices --no-specials -e "${SSH_CMD}" "${STAGING}/" "${REMOTE}:${REPO_PATH}/"
 
 echo "Done."
