@@ -1,0 +1,50 @@
+name: 'Maven SSH Deploy'
+description: 'Deploy Maven artifacts via SSH and rsync'
+author: 'Martin Paljak'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+inputs:
+  user:
+    description: 'SSH user for deployment (can be user@host:port)'
+    required: true
+  key:
+    description: 'SSH private key for authentication'
+    required: true
+  host:
+    description: 'SSH host for deployment (can include port as host:port)'
+    required: false
+  host_fp:
+    description: 'SSH host fingerprint for verification (e.g. SHA256:...)'
+    required: true
+  path:
+    description: 'Remote repository path (defaults to . / directory in authorized_keys)'
+    required: false
+    default: '.'
+  snapshots:
+    description: 'Remote path for non-tag builds (branches, PRs). Defaults to SNAPSHOTS'
+    required: false
+    default: 'SNAPSHOTS'
+  pull:
+    description: 'Allow running on pull requests (disabled by default for security)'
+    required: false
+    default: 'false'
+  unsigned:
+    description: 'Skip tag signature verification (not recommended)'
+    required: false
+    default: 'false'
+runs:
+  using: 'composite'
+  steps:
+    - run: ${{ github.action_path }}/entrypoint.sh
+      shell: bash
+      env:
+        INPUT_USER: ${{ inputs.user }}
+        INPUT_KEY: ${{ inputs.key }}
+        INPUT_HOST: ${{ inputs.host }}
+        INPUT_HOST_FP: ${{ inputs.host_fp }}
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_SNAPSHOTS: ${{ inputs.snapshots }}
+        INPUT_PULL: ${{ inputs.pull }}
+        INPUT_UNSIGNED: ${{ inputs.unsigned }}
+        GITHUB_TOKEN: ${{ github.token }}
