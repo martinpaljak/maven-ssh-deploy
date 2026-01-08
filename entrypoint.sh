@@ -179,7 +179,6 @@ chmod 600 ~/.ssh/known_hosts
 
 echo "Setting up SSH agent..."
 eval "$(ssh-agent -s)" > /dev/null
-# Here-string doesn't appear in xtrace, keeping key out of logs
 ssh-add - <<< "${SSH_KEY//$'\r'/}"
 
 SSH_CMD="ssh -p ${SSH_PORT} -o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts"
@@ -196,7 +195,7 @@ rsync -rptm --no-links --no-devices --no-specials -e "${SSH_CMD}" \
     --include='*/' \
     --include='maven-metadata.xml*' \
     --exclude='*' \
-    -- "${SSH_USER}@${SSH_HOST}:${REPO_PATH}/" "${STAGING}/" || true
+    -- "${SSH_USER}@${SSH_HOST}:${REPO_PATH}/" "${STAGING}/"
 
 echo "Building and deploying locally..."
 ./mvnw --no-transfer-progress -B deploy -DaltDeploymentRepository=ephemeral::file://"${STAGING}"

@@ -41,12 +41,12 @@ rsync -am --no-links --no-devices --no-specials -e "${SSH_CMD}" \
     --include='*/' \
     --include='maven-metadata.xml*' \
     --exclude='*' \
-    "${REMOTE}:${REPO_PATH}/" "${STAGING}/" 2>/dev/null || true
+    -- "${REMOTE}:${REPO_PATH}/" "${STAGING}/" || true
 
 echo "Building..."
 ./mvnw -B deploy -DaltDeploymentRepository=local::default::file://"${STAGING}"
 
 echo "Uploading to ${REMOTE}:${REPO_PATH}..."
-rsync -rptv --no-links --no-devices --no-specials -e "${SSH_CMD}" "${STAGING}/" "${REMOTE}:${REPO_PATH}/"
+rsync -rptv --no-links --no-devices --no-specials -e "${SSH_CMD}" -- "${STAGING}/" "${REMOTE}:${REPO_PATH}/"
 
 echo "Done."
