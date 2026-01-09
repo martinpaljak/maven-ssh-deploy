@@ -1,6 +1,9 @@
 # maven-ssh-deploy
 
-Deploy Maven artifacts the opinionated Unix way - with SSH, rsync and signed tags.
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/martinpaljak/maven-ssh-deploy/blob/main/LICENSE)
+&nbsp;[![Made in Estonia](https://img.shields.io/badge/Made_in-Estonia-blue)](https://estonia.ee)
+
+> Deploy Maven artifacts the opinionated Unix way - with SSH, rsync and signed tags.
 
 - **Signed releases**: signed tags by default
 - **Classical unix**: rsync over SSH
@@ -26,9 +29,9 @@ restrict,command="/usr/bin/rrsync -no-del /path/to/repo" ssh-ed25519 AAAAC3...
 > [!IMPORTANT]
 > This is the secure baseline, do not deviate unless absolutely sure!
 
-**Note on paths:**
-- If `rrsync` is used, the `path` input in the action is relative to the directory specified in the `command`.
-- If `rrsync` is **not** used, the `path` to the repository most probably HAS to be specified in the action configuration.
+> [!NOTE]
+> With `rrsync`, the `path` input is relative to the directory in `command`.
+> Without `rrsync`, specify the full repository path in the action config.
 
 ## How It Works
 
@@ -38,7 +41,9 @@ restrict,command="/usr/bin/rrsync -no-del /path/to/repo" ssh-ed25519 AAAAC3...
 
 ## Security
 
-- **Pull requests** are skipped by default (secrets could be exposed via PR from fork). Set `pull: true` to deploy.
+> [!CAUTION]
+> Pull requests from forks can expose secrets - skipped by default. Set `pull: true` only for trusted repos.
+
 - **Tag releases** require SSH signature by repository owner. Set `unsigned: true` to skip (not recommended).
 - Standard repository hardening (branch protection, CODEOWNERS etc) applies.
 
@@ -46,37 +51,6 @@ restrict,command="/usr/bin/rrsync -no-del /path/to/repo" ssh-ed25519 AAAAC3...
 > For the "Verified" badge on commits/tags and tag signature checks to work, add your SSH signing key at [github.com/settings/keys](https://github.com/settings/keys).
 
 ## Usage
-
-```yaml
-- uses: actions/setup-java@v5
-  with:
-    distribution: temurin
-    java-version: 17
-
-- uses: martinpaljak/maven-ssh-deploy@v1
-  with:
-    user: mvn@example.com:2222
-    key: ${{ secrets.SSH_KEY }}
-    host_fp: SHA256:2wykddxDwF8jXGvVvKX9ayLYF4cbKFahQgEKe5Cn26Y
-```
-
-> [!TIP]
-> For best security, pin to a specific commit hash of the plugin instead of a tag.
-
-## Inputs
-
-| Input | Required | Description |
-|-------|----------|-------------|
-| `user` | Yes | SSH user (can be `user@host:port`) |
-| `key` | Yes | SSH private key |
-| `host_fp` | Yes | SSH host fingerprint (`SHA256:...`) |
-| `host` | No | SSH host (if not in `user`) |
-| `path` | No | Remote path for tag releases (default: `.`) |
-| `snapshots` | No | Remote path for non-tag builds (default: `SNAPSHOTS`) |
-| `pull` | No | Allow pull requests (default: `false`) |
-| `unsigned` | No | Skip tag signature verification (default: `false`) |
-
-## Example Workflow
 
 ```yaml
 name: Deploy
@@ -104,6 +78,22 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           host_fp: SHA256:auiF3nHWvDmvq2stDl+QEECCqMcDp+FY1/bDRnvxpRw
 ```
+
+> [!TIP]
+> For best security, pin to a specific commit hash of the plugin instead of a tag.
+
+## Inputs
+
+| Input | Required | Description |
+|-------|----------|-------------|
+| `user` | Yes | SSH user (can be `user@host:port`) |
+| `key` | Yes | SSH private key |
+| `host_fp` | Yes | SSH host fingerprint (`SHA256:...`) |
+| `host` | No | SSH host (if not in `user`) |
+| `path` | No | Remote path for tag releases (default: `.`) |
+| `snapshots` | No | Remote path for non-tag builds (default: `SNAPSHOTS`) |
+| `pull` | No | Allow pull requests (default: `false`) |
+| `unsigned` | No | Skip tag signature verification (default: `false`) |
 
 ## Local Usage
 
@@ -136,7 +126,7 @@ For manual deploys from your workstation (uses system SSH config):
 </distributionManagement>
 ```
 
-The wagon-ssh-external extension is slow, deprecated, and adds unnecessary complexity to every pom.xml. This action uses rsync instead - faster, standard, and requires zero Maven configuration. 
+The wagon-ssh-external extension is slow, deprecated, and adds unnecessary complexity to every pom.xml. This action uses rsync instead - faster, standard, requires zero Maven configuration. 
 
 ### Simplifies CI/CD to a single step
 
