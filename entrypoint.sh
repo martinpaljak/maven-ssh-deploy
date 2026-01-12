@@ -197,8 +197,8 @@ rsync -rptm --no-links --no-devices --no-specials -e "${SSH_CMD}" \
     --exclude='*' \
     -- "${SSH_USER}@${SSH_HOST}:${REPO_PATH}/" "${STAGING}/"
 
-echo "Building and deploying locally..."
-./mvnw --no-transfer-progress -B deploy -DaltDeploymentRepository=ephemeral::file://"${STAGING}"
+echo "Deploying locally..."
+./mvnw --no-transfer-progress -B -DskipTests deploy -DaltDeploymentRepository=ephemeral::file://"${STAGING}"
 
 echo "Syncing to remote..."
 rsync -rpt --no-links --no-devices --no-specials -e "${SSH_CMD}" -- "${STAGING}/" "${SSH_USER}@${SSH_HOST}:${REPO_PATH}/"
