@@ -198,6 +198,7 @@ rsync -rptm --no-links --no-devices --no-specials -e "${SSH_CMD}" \
     -- "${SSH_USER}@${SSH_HOST}:${REPO_PATH}/" "${STAGING}/"
 
 echo "Deploying locally..."
+export CI=false
 ./mvnw --no-transfer-progress -B -DskipTests deploy -DaltDeploymentRepository=ephemeral::file://"${STAGING}"
 
 echo "Syncing to remote..."
